@@ -19,7 +19,11 @@ const usersSchema = new Schema<UserI>(
             validate: [validateEmail, 'Please fill a valid email address'],
         },
         password: { type: String, required },
-        role: { type: String, enum: ['admin', 'user'], default: 'user' },
+        role: {
+            type: String,
+            enum: ['admin', 'user', 'hr', 'manager'],
+            default: 'user',
+        },
         enable: { type: Boolean, default: true },
     },
     {

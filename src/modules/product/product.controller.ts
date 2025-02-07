@@ -1,109 +1,20 @@
 import { Response } from 'express'
-import { UserD } from '@db/models/user'
+import { ProductD } from '@db/models/product'
 import { MyRequest } from '@myTypes/Express'
 import { ErrorResponse, SuccessResponse } from '@utils/Response'
-import { AuthServices } from '@modules/auth/service/auth.service'
+import { ProductServices } from './service/product.service'
 import { ErrorResponseC, SuccessResponseC } from '@myTypes/services.response'
-export const SignIn = async (req: MyRequest<UserD>, res: Response) => {
-    const { email, password, stay = false } = req.body
-    const result = await AuthServices.executeLogin(email, password, stay, res)
-    if (result instanceof SuccessResponseC)
-        return SuccessResponse(
-            res,
-            result.code,
-            result.data,
-            result.message,
-            result.status
-        )
-    if (result instanceof ErrorResponseC)
-        return ErrorResponse(res, result.code, result.message, result.error)
-}
-export const SignUp = async (req: MyRequest<UserD>, res: Response) => {
-    const { email, password, firstName, lastName, stay = false } = req.body
-    const result = await AuthServices.executeRegister(
-        email,
-        password,
-        firstName,
-        lastName,
-        stay,
-        res
-    )
-    if (result instanceof SuccessResponseC)
-        return SuccessResponse(
-            res,
-            result.code,
-            result.data,
-            result.message,
-            result.status
-        )
-    if (result instanceof ErrorResponseC)
-        return ErrorResponse(res, result.code, result.message, result.error)
-}
 
-export const AuthBack = async (req: MyRequest<UserD>, res: Response) => {
-    const { stay = false } = req.body
-    const resulte = await AuthServices.executeAuthBack(req.user!, stay, res)
-    if (resulte instanceof SuccessResponseC)
-        return SuccessResponse(
-            res,
-            resulte.code,
-            resulte.data,
-            resulte.message,
-            resulte.status
-        )
-    if (resulte instanceof ErrorResponseC)
-        return ErrorResponse(res, resulte.code, resulte.message, resulte.error)
-}
-
-export const SignOut = async (req: MyRequest<UserD>, res: Response) => {
-    const result = await AuthServices.executeLogout(res)
-    if (result instanceof SuccessResponseC)
-        return SuccessResponse(
-            res,
-            result.code,
-            result.data,
-            result.message,
-            result.status
-        )
-    if (result instanceof ErrorResponseC)
-        return ErrorResponse(res, result.code, result.message, result.error)
-}
-
-export const GetMe = async (req: MyRequest<UserD>, res: Response) => {
-    const user = req.user!
-
-    const result = await AuthServices.executeGetMe(user)
-    if (result instanceof SuccessResponseC)
-        return SuccessResponse(
-            res,
-            result.code,
-            result.data,
-            result.message,
-            result.status
-        )
-    if (result instanceof ErrorResponseC)
-        return ErrorResponse(res, result.code, result.message, result.error)
-}
-
-export const GetUsers = async (req: MyRequest<UserD>, res: Response) => {
-    const result = await AuthServices.executeGetUsers()
-    if (result instanceof SuccessResponseC)
-        return SuccessResponse(
-            res,
-            result.code,
-            result.data,
-            result.message,
-            result.status
-        )
-    if (result instanceof ErrorResponseC)
-        return ErrorResponse(res, result.code, result.message, result.error)
-}
-
-export const UpdateUser = async (req: MyRequest<UserD>, res: Response) => {
-    const { email, name } = req.body
-    const result = await AuthServices.executeUpdateUser(req.params.id, {
-        email,
+export const CreateProduct = async (
+    req: MyRequest<ProductD>,
+    res: Response
+) => {
+    const { name, category, price, unit } = req.body
+    const result = await ProductServices.executeCreateProduct({
         name,
+        category,
+        price,
+        unit,
     })
     if (result instanceof SuccessResponseC)
         return SuccessResponse(
@@ -117,9 +28,8 @@ export const UpdateUser = async (req: MyRequest<UserD>, res: Response) => {
         return ErrorResponse(res, result.code, result.message, result.error)
 }
 
-export const UpdateRole = async (req: MyRequest<UserD>, res: Response) => {
-    const { role } = req.body
-    const result = await AuthServices.executeUpdateRole(req.params.id, role)
+export const GetProducts = async (req: MyRequest<ProductD>, res: Response) => {
+    const result = await ProductServices.executeGetProducts()
     if (result instanceof SuccessResponseC)
         return SuccessResponse(
             res,
@@ -132,11 +42,87 @@ export const UpdateRole = async (req: MyRequest<UserD>, res: Response) => {
         return ErrorResponse(res, result.code, result.message, result.error)
 }
 
-export const UpdatePassword = async (req: MyRequest<UserD>, res: Response) => {
-    const { password } = req.body
-    const result = await AuthServices.executeUpdatePassword(
-        req.user?.id,
-        password
+export const GetProduct = async (req: MyRequest<ProductD>, res: Response) => {
+    const result = await ProductServices.executeGetProduct(req.params.id)
+    if (result instanceof SuccessResponseC)
+        return SuccessResponse(
+            res,
+            result.code,
+            result.data,
+            result.message,
+            result.status
+        )
+    if (result instanceof ErrorResponseC)
+        return ErrorResponse(res, result.code, result.message, result.error)
+}
+
+export const UpdateProduct = async (
+    req: MyRequest<ProductD>,
+    res: Response
+) => {
+    const { name, category, price, unit } = req.body
+    const result = await ProductServices.executeUpdateProduct(req.params.id, {
+        name,
+        category,
+        price,
+        unit,
+    })
+    if (result instanceof SuccessResponseC)
+        return SuccessResponse(
+            res,
+            result.code,
+            result.data,
+            result.message,
+            result.status
+        )
+    if (result instanceof ErrorResponseC)
+        return ErrorResponse(res, result.code, result.message, result.error)
+}
+
+export const DeleteProduct = async (
+    req: MyRequest<ProductD>,
+    res: Response
+) => {
+    const result = await ProductServices.executeDeleteProduct(req.params.id)
+    if (result instanceof SuccessResponseC)
+        return SuccessResponse(
+            res,
+            result.code,
+            result.data,
+            result.message,
+            result.status
+        )
+    if (result instanceof ErrorResponseC)
+        return ErrorResponse(res, result.code, result.message, result.error)
+}
+
+export const GetProductsByCategory = async (
+    req: MyRequest<ProductD>,
+    res: Response
+) => {
+    const result = await ProductServices.executeGetProductsByCategory(
+        req.params.category
+    )
+    if (result instanceof SuccessResponseC)
+        return SuccessResponse(
+            res,
+            result.code,
+            result.data,
+            result.message,
+            result.status
+        )
+    if (result instanceof ErrorResponseC)
+        return ErrorResponse(res, result.code, result.message, result.error)
+}
+
+export const UpdateProductPrice = async (
+    req: MyRequest<ProductD>,
+    res: Response
+) => {
+    const { price } = req.body
+    const result = await ProductServices.executeUpdateProductPrice(
+        req.params.id,
+        price
     )
     if (result instanceof SuccessResponseC)
         return SuccessResponse(

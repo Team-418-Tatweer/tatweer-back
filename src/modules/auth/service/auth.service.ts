@@ -172,4 +172,227 @@ export class AuthServices {
             )
         }
     }
+
+    static executeLogout = async (res: Response): Promise<ResponseT> => {
+        try {
+            res.clearCookie('token')
+            const resp: ICode<IAuthLogs> = authLogs.LOGOUT_SUCCESS
+            return new SuccessResponseC(
+                resp.type,
+                null,
+                resp.message,
+                HttpCodes.OK.code
+            )
+        } catch (err) {
+            const msg = formatString(authLogs.AUTH_ERROR_GENERIC.message, {
+                error: (err as Error)?.message || '',
+            })
+            authLogger.error(msg, err as Error)
+            return new ErrorResponseC(
+                authLogs.AUTH_ERROR_GENERIC.type,
+                HttpCodes.InternalServerError.code,
+                msg
+            )
+        }
+    }
+
+    static executeGetUsers = async (): Promise<ResponseT> => {
+        try {
+            const users = await UserModel.find()
+            const resp: ICode<IAuthLogs> = authLogs.USERS_FOUND
+            return new SuccessResponseC(
+                resp.type,
+                users.map((u) => u.Optimize()),
+                resp.message,
+                HttpCodes.OK.code
+            )
+        } catch (err) {
+            const msg = formatString(authLogs.USERS_ERROR.message, {
+                error: (err as Error)?.message || '',
+            })
+            authLogger.error(msg, err as Error)
+            return new ErrorResponseC(
+                authLogs.USERS_ERROR.type,
+                HttpCodes.InternalServerError.code,
+                msg
+            )
+        }
+    }
+
+    static executeGetUser = async (userId?: string): Promise<ResponseT> => {
+        try {
+            const user = await UserModel.findById(userId)
+            if (!user) {
+                return new ErrorResponseC(
+                    authLogs.USER_NOT_FOUND.type,
+                    HttpCodes.NotFound.code,
+                    authLogs.USER_NOT_FOUND.message
+                )
+            }
+            const msg = formatString(authLogs.USER_FOUND.message, {
+                email: user.email,
+            })
+            authLogger.info(msg)
+            return new SuccessResponseC(
+                authLogs.USER_FOUND.type,
+                user.Optimize(),
+                msg,
+                HttpCodes.OK.code
+            )
+        } catch (err) {
+            const msg = formatString(authLogs.USER_ERROR.message, {
+                error: (err as Error)?.message || '',
+            })
+            authLogger.error(msg, err as Error)
+            return new ErrorResponseC(
+                authLogs.USER_ERROR.type,
+                HttpCodes.InternalServerError.code,
+                msg
+            )
+        }
+    }
+
+    static executeGetMe = async (user: UserD): Promise<ResponseT> => {
+        try {
+            if (!user) {
+                return new ErrorResponseC(
+                    authLogs.USER_ISN_T_LOGGED.type,
+                    HttpCodes.Unauthorized.code,
+                    authLogs.USER_ISN_T_LOGGED.message
+                )
+            }
+            const msg = formatString(authLogs.USER_FOUND.message, {
+                email: user.email,
+            })
+            authLogger.info(msg)
+            return new SuccessResponseC(
+                authLogs.USER_FOUND.type,
+                user.Optimize(),
+                msg,
+                HttpCodes.OK.code
+            )
+        } catch (err) {
+            const msg = formatString(authLogs.USER_ERROR.message, {
+                error: (err as Error)?.message || '',
+            })
+            authLogger.error(msg, err as Error)
+            return new ErrorResponseC(
+                authLogs.USER_ERROR.type,
+                HttpCodes.InternalServerError.code,
+                msg
+            )
+        }
+    }
+
+    static executeUpdateUser = async (
+        userId: string,
+        props: Partial<UserD>
+    ): Promise<ResponseT> => {
+        try {
+            const user = await UserModel.findById(userId)
+            if (!user) {
+                return new ErrorResponseC(
+                    authLogs.USER_NOT_FOUND.type,
+                    HttpCodes.NotFound.code,
+                    authLogs.USER_NOT_FOUND.message
+                )
+            }
+            await user.updateOne(props)
+            const msg = formatString(authLogs.USER_UPDATED.message, {
+                email: user.email,
+            })
+            authLogger.info(msg)
+            return new SuccessResponseC(
+                authLogs.USER_UPDATED.type,
+                user.Optimize(),
+                msg,
+                HttpCodes.OK.code
+            )
+        } catch (err) {
+            const msg = formatString(authLogs.USER_UPDATE_ERROR.message, {
+                error: (err as Error)?.message || '',
+            })
+            authLogger.error(msg, err as Error)
+            return new ErrorResponseC(
+                authLogs.USER_UPDATE_ERROR.type,
+                HttpCodes.InternalServerError.code,
+                msg
+            )
+        }
+    }
+
+    static executeUpdateRole = async (
+        userId: string,
+        role: string
+    ): Promise<ResponseT> => {
+        try {
+            const user = await UserModel.findById(userId)
+            if (!user) {
+                return new ErrorResponseC(
+                    authLogs.USER_NOT_FOUND.type,
+                    HttpCodes.NotFound.code,
+                    authLogs.USER_NOT_FOUND.message
+                )
+            }
+            await user.updateOne({ role })
+            const msg = formatString(authLogs.ROLE_UPDATED.message, {
+                email: user.email,
+                role,
+            })
+            authLogger.info(msg)
+            return new SuccessResponseC(
+                authLogs.ROLE_UPDATED.type,
+                user.Optimize(),
+                msg,
+                HttpCodes.OK.code
+            )
+        } catch (err) {
+            const msg = formatString(authLogs.ROLE_UPDATE_ERROR.message, {
+                error: (err as Error)?.message || '',
+            })
+            authLogger.error(msg, err as Error)
+            return new ErrorResponseC(
+                authLogs.ROLE_UPDATE_ERROR.type,
+                HttpCodes.InternalServerError.code,
+                msg
+            )
+        }
+    }
+
+    static executeUpdatePassword = async (
+        userId: string,
+        password: string
+    ): Promise<ResponseT> => {
+        try {
+            const user = await UserModel.findById(userId)
+            if (!user) {
+                return new ErrorResponseC(
+                    authLogs.USER_NOT_FOUND.type,
+                    HttpCodes.NotFound.code,
+                    authLogs.USER_NOT_FOUND.message
+                )
+            }
+            await user.updateOne({ password })
+            const msg = formatString(authLogs.PASSWORD_UPDATED.message, {
+                email: user.email,
+            })
+            authLogger.info(msg)
+            return new SuccessResponseC(
+                authLogs.PASSWORD_UPDATED.type,
+                user.Optimize(),
+                msg,
+                HttpCodes.OK.code
+            )
+        } catch (err) {
+            const msg = formatString(authLogs.PASSWORD_UPDATE_ERROR.message, {
+                error: (err as Error)?.message || '',
+            })
+            authLogger.error(msg, err as Error)
+            return new ErrorResponseC(
+                authLogs.PASSWORD_UPDATE_ERROR.type,
+                HttpCodes.InternalServerError.code,
+                msg
+            )
+        }
+    }
 }
