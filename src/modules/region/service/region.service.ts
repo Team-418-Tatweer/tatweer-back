@@ -60,7 +60,7 @@ export class RegionServices {
 
     static executeGetRegion = async (id: string): Promise<ResponseT> => {
         try {
-            const region = await RegionModel.findRegion(id)
+            const region = await RegionModel.findById(id)
             if (!region) {
                 const msg = formatString(regionLogs.REGION_NOT_FOUND.message, {
                     id,

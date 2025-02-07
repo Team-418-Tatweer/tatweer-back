@@ -60,7 +60,7 @@ export class ClientServices {
 
     static executeGetClient = async (id: string): Promise<ResponseT> => {
         try {
-            const client = await ClientModel.findClient(id)
+            const client = await ClientModel.findById(id)
             if (!client) {
                 const msg = formatString(clientLogs.CLIENT_NOT_FOUND.message, {
                     id,
