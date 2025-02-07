@@ -33,8 +33,8 @@ describe('Test register with valid email and password', () => {
         const response = await request(app).post(route).send({
             email: email,
             password: 'password',
-            firstName: 'moussaab',
-            lastName: 'badla',
+            firstName: 'sohaib',
+            lastName: 'zouambia',
         })
         expect(response.status).toBe(HttpCodes.Created.code)
         expect(response.body.status).toBe(authLogs.REGISTER_SUCCESS.type)
@@ -48,13 +48,13 @@ describe('Test register with valid email and password', () => {
 
 describe('register with email already exist', () => {
     test('It should responce with Error response type : REGISTER_ERROR_EMAIL_ALREADY_EXIST ', async () => {
-        const email = 'badlamoussaab@gmail.com'
+        const email = 'js_zouambia@esi.dz'
         await createUserFactory({ role: 'user' , password: 'password' , email: email });
         const response = await request(app).post(route).send({
             email: email,
             password: 'password',
-            firstName: 'moussaab',
-            lastName: 'badla',
+            firstName: 'sohaib',
+            lastName: 'zouambia',
         })
         expect(response.status).toBe(HttpCodes.BadRequest.code)
         expect(response.body.status).toBe('error')
@@ -72,7 +72,7 @@ describe('register with invalid input', () => {
         const response = await request(app).post(route).send({
             email: RandomEmail(),
             password: 'password',
-            firstName: 'moussaab',
+            firstName: 'sohaib',
         })
         expect(response.status).toBe(HttpCodes.BadRequest.code)
         expect(response.body.status).toBe('error')
@@ -88,8 +88,8 @@ describe('register with invalid password', () => {
         const response = await request(app).post(route).send({
             email: RandomEmail(),
             password: 'pass',
-            firstName: 'moussaab',
-            lastName: 'badla',
+            firstName: 'sohaib',
+            lastName: 'zouambia',
         })
         expect(response.status).toBe(HttpCodes.BadRequest.code)
         expect(response.body.status).toBe('error')
@@ -103,10 +103,10 @@ describe('register with invalid password', () => {
 describe('register with invalid email', () => {
     test('It should responce with Error response type : ERROR_INVALID_INPUT ', async () => {
         const response = await request(app).post(route).send({
-            email: 'badlamoussaab',
+            email: 'js_zouambia@esi.dz',
             password: 'password',
-            firstName: 'moussaab',
-            lastName: 'badla',
+            firstName: 'sohaib',
+            lastName: 'zouambia',
         })
         expect(response.status).toBe(HttpCodes.BadRequest.code)
         expect(response.body.status).toBe('error')

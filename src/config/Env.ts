@@ -95,9 +95,9 @@ export const MAIN_URL = CheckEnv('MAIN_URL', 'FRONT_URL')
 
 /**
  * @description The developer's email address.
- * @default "badlamoussaab@gmail.com"
+ * @default "js_zouambia@esi.dz"
  */
-export const DEV_Email = CheckEnv('DEV_Email', 'badlamoussaab@gmail.com')
+export const DEV_Email = CheckEnv('DEV_Email', 'js_zouambia@esi.dz')
 
 /**
  * @description The port used for email communication.
@@ -150,13 +150,12 @@ export const sizeLimit = Number(CheckEnv('BACK_SIZE_LIMIT', '5242880'))
 /**
  *  @description The URL of the Discord bot.
  *  @default "DISCORD_REDIRECT_URI"
- * 
+ *
  */
 
 export const DISCORD_REDIRECT_URI = CheckEnv(
     'DISCORD_REDIRECT_URI',
     'http://localhost:8080'
 )
-
 
 log('--------------------------------------------------------\n')

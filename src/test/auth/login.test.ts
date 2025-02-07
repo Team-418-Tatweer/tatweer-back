@@ -28,9 +28,9 @@ const route = '/auth/login'
 
 describe('Test the Login with valid email and password', () => {
     test('It should response with Success response', async () => {
-        await createUserFactory({ role: 'user' , password: 'password' , email: 'badlamoussaab@gmail.com' });
+        await createUserFactory({ role: 'user' , password: 'password' , email: 'js_zouambia@esi.dz' });
         const response = await request(app).post(route).send({
-            email: 'badlamoussaab@gmail.com',
+            email: 'js_zouambia@esi.dz',
             password: 'password',
         })
         expect(response.status).toBe(HttpCodes.Accepted.code)
@@ -63,9 +63,9 @@ describe("Test login with email doesn't exist", () => {
 })
 describe('Test login with email existe and invalid password', () => {
     test('It should response with Error response type : ERROR_INVALID_INPUT ', async () => {
-        await createUserFactory({ role: 'user' , password: 'password' , email: 'badlamoussaab@gmail.com' });
+        await createUserFactory({ role: 'user' , password: 'password' , email: 'js_zouambia@esi.dz' });
         const response = await request(app).post(route).send({
-            email: 'badlamoussaab@gmail.com',
+            email: 'js_zouambia@esi.dz',
             password: RandomString(),
         })
         expect(response.status).toBe(HttpCodes.Unauthorized.code)
@@ -74,7 +74,7 @@ describe('Test login with email existe and invalid password', () => {
             formatString(
                 authLogs.LOGIN_ERROR_INCORRECT_PASSWORD_FOUND.message,
                 {
-                    email: 'badlamoussaab@gmail.com',
+                    email: 'js_zouambia@esi.dz',
                 }
             )
         )
