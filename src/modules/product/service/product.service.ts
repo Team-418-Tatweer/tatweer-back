@@ -1,5 +1,5 @@
 import { ProductD, ProductModel } from '@db/models/product'
-import productLogs, { IProductLogs, productLogger } from './product.logs'
+import productLogs, { productLogger } from './product.logs'
 import { formatString } from '@utils/Strings'
 import { HttpCodes } from '@config/Errors'
 import { ErrorResponseC, SuccessResponseC } from '@myTypes/services.response'

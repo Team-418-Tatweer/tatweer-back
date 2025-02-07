@@ -1,14 +1,11 @@
 import { Response } from 'express'
-import { ProductD } from '@db/models/product'
 import { MyRequest } from '@myTypes/Express'
 import { ErrorResponse, SuccessResponse } from '@utils/Response'
 import { ProductServices } from './service/product.service'
 import { ErrorResponseC, SuccessResponseC } from '@myTypes/services.response'
+import { UserD } from '@models/user'
 
-export const CreateProduct = async (
-    req: MyRequest<ProductD>,
-    res: Response
-) => {
+export const CreateProduct = async (req: MyRequest<UserD>, res: Response) => {
     const { name, category, price, unit } = req.body
     const result = await ProductServices.executeCreateProduct({
         name,
@@ -28,7 +25,7 @@ export const CreateProduct = async (
         return ErrorResponse(res, result.code, result.message, result.error)
 }
 
-export const GetProducts = async (req: MyRequest<ProductD>, res: Response) => {
+export const GetProducts = async (req: MyRequest<UserD>, res: Response) => {
     const result = await ProductServices.executeGetProducts()
     if (result instanceof SuccessResponseC)
         return SuccessResponse(
@@ -42,7 +39,7 @@ export const GetProducts = async (req: MyRequest<ProductD>, res: Response) => {
         return ErrorResponse(res, result.code, result.message, result.error)
 }
 
-export const GetProduct = async (req: MyRequest<ProductD>, res: Response) => {
+export const GetProduct = async (req: MyRequest<UserD>, res: Response) => {
     const result = await ProductServices.executeGetProduct(req.params.id)
     if (result instanceof SuccessResponseC)
         return SuccessResponse(
@@ -56,10 +53,7 @@ export const GetProduct = async (req: MyRequest<ProductD>, res: Response) => {
         return ErrorResponse(res, result.code, result.message, result.error)
 }
 
-export const UpdateProduct = async (
-    req: MyRequest<ProductD>,
-    res: Response
-) => {
+export const UpdateProduct = async (req: MyRequest<UserD>, res: Response) => {
     const { name, category, price, unit } = req.body
     const result = await ProductServices.executeUpdateProduct(req.params.id, {
         name,
@@ -79,10 +73,7 @@ export const UpdateProduct = async (
         return ErrorResponse(res, result.code, result.message, result.error)
 }
 
-export const DeleteProduct = async (
-    req: MyRequest<ProductD>,
-    res: Response
-) => {
+export const DeleteProduct = async (req: MyRequest<UserD>, res: Response) => {
     const result = await ProductServices.executeDeleteProduct(req.params.id)
     if (result instanceof SuccessResponseC)
         return SuccessResponse(
@@ -97,7 +88,7 @@ export const DeleteProduct = async (
 }
 
 export const GetProductsByCategory = async (
-    req: MyRequest<ProductD>,
+    req: MyRequest<UserD>,
     res: Response
 ) => {
     const result = await ProductServices.executeGetProductsByCategory(
@@ -116,7 +107,7 @@ export const GetProductsByCategory = async (
 }
 
 export const UpdateProductPrice = async (
-    req: MyRequest<ProductD>,
+    req: MyRequest<UserD>,
     res: Response
 ) => {
     const { price } = req.body

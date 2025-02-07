@@ -1,5 +1,4 @@
 import { Model, Schema, model, Document } from 'mongoose'
-import { RandomEmail, validateEmail } from '@utils/Function'
 const required = true
 export interface ProductD extends Document<ProductI>, ProductI {}
 
