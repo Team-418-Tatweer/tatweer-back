@@ -24,7 +24,7 @@ const orderSchema = new Schema<OrderI>(
         client: { type: Schema.Types.ObjectId, ref: 'Client', required },
         region: { type: Schema.Types.ObjectId, ref: 'Region', required },
         notes: { type: String },
-        date: { type: Date, default: Date.now },
+        date: { type: Date, default: Date.now() },
         status: {
             type: String,
             enum: ['pending', 'processing', 'completed', 'cancelled'],
@@ -38,20 +38,23 @@ const orderSchema = new Schema<OrderI>(
 )
 
 orderSchema.pre('save', async function (next) {
-    try {
-        const order = this
-        let totalPrice = 0
-        const productIds = order.orderItems.map((item) => item.product)
-        const products = await ProductModel.find({ _id: { $in: productIds } })
-        if (products.length !== productIds.length) {
-            new Error('Invalid product ID in order items')
+    if (this.isNew) {
+        try {
+            const order = this
+            let totalPrice = 0
+
+            await order.populate('orderItems.product')
+
+            order.orderItems.forEach((item) => {
+                if (item.product && 'price' in item.product) {
+                    totalPrice += (item.product as any).price * item.quantity
+                }
+            })
+            this.totalPrice = totalPrice
+            next()
+        } catch (err) {
+            next(err as Error)
         }
-        totalPrice = products.reduce((a, b) => {
-            return a + b.price
-        }, 0)
-        next()
-    } catch (err) {
-        next(err as Error)
     }
 })
 
