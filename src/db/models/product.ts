@@ -20,7 +20,7 @@ const productsSchema = new Schema<ProductI>(
 productsSchema.set('toJSON', { virtuals: true })
 
 export const ProductModel = model<ProductI, ProductModel>(
-    'Products',
+    'Product',
     productsSchema
 )
 

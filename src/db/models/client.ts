@@ -19,7 +19,7 @@ const clientsSchema = new Schema<ClientI>(
 
 clientsSchema.set('toJSON', { virtuals: true })
 
-export const ClientModel = model<ClientI, ClientModel>('Clients', clientsSchema)
+export const ClientModel = model<ClientI, ClientModel>('Client', clientsSchema)
 
 export const createClientFactory = async (
     props: Partial<ClientD>

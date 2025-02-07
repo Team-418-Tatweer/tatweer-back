@@ -1,11 +1,15 @@
-declare interface OrderItemI {
-    product: ProductI
-    quantity: number
-}
+import { Document, ObjectId, PopulatedDoc, Types } from 'mongoose'
 
 declare interface OrderI {
     orderItems: OrderItemI[]
-    client: ClientI
-    total: number
-    user: UserI
+    client: Types.ObjectId
+    region: Types.ObjectId
+    notes: string
+    date: Date
+    status: string
+    totalPrice: number
+}
+declare interface OrderItemI {
+    product: Types.ObjectId
+    quantity: number
 }

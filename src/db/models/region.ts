@@ -17,7 +17,7 @@ const regionsSchema = new Schema<RegionI>(
 
 regionsSchema.set('toJSON', { virtuals: true })
 
-export const RegionModel = model<RegionI, RegionModel>('Regions', regionsSchema)
+export const RegionModel = model<RegionI, RegionModel>('Region', regionsSchema)
 
 export const createRegionFactory = async (
     props: Partial<RegionD>

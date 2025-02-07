@@ -65,7 +65,7 @@ usersSchema.methods.comparePasswords = async function (
     }
 }
 
-export const UserModel = model<UserI, UserModel>('Users', usersSchema)
+export const UserModel = model<UserI, UserModel>('User', usersSchema)
 
 export const createUserFactory = async (
     props: Partial<UserI>
