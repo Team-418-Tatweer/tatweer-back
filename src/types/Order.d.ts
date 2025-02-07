@@ -5,6 +5,7 @@ declare interface OrderItemI {
 
 declare interface OrderI {
     orderItems: OrderItemI[]
+    client: ClientI
     total: number
     user: UserI
 }

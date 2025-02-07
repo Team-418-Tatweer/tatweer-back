@@ -1,0 +1,6 @@
+export * from '../../middleware/auth'
+export * from './region.controller'
+export * from './region.router'
+export * from './service/region.service'
+export * from './service/region.logs'
+export * from './service/region.validator'

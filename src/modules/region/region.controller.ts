@@ -1,17 +1,15 @@
 import { Response } from 'express'
 import { MyRequest } from '@myTypes/Express'
 import { ErrorResponse, SuccessResponse } from '@utils/Response'
-import { ClientServices } from './service/client.service'
+import { RegionServices } from './service/region.service'
 import { ErrorResponseC, SuccessResponseC } from '@myTypes/services.response'
 import { UserD } from '@models/user'
 
-export const createClient = async (req: MyRequest<UserD>, res: Response) => {
-    const { name, email, phone, address } = req.body
-    const result = await ClientServices.executeCreateClient({
+export const CreateRegion = async (req: MyRequest<UserD>, res: Response) => {
+    const { name, designation } = req.body
+    const result = await RegionServices.executeCreateRegion({
         name,
-        email,
-        phone,
-        address,
+        designation,
     })
     if (result instanceof SuccessResponseC)
         return SuccessResponse(
@@ -25,8 +23,8 @@ export const createClient = async (req: MyRequest<UserD>, res: Response) => {
         return ErrorResponse(res, result.code, result.message, result.error)
 }
 
-export const getClients = async (req: MyRequest<UserD>, res: Response) => {
-    const result = await ClientServices.executeGetClients()
+export const GetRegions = async (req: MyRequest<UserD>, res: Response) => {
+    const result = await RegionServices.executeGetRegions()
     if (result instanceof SuccessResponseC)
         return SuccessResponse(
             res,
@@ -39,8 +37,8 @@ export const getClients = async (req: MyRequest<UserD>, res: Response) => {
         return ErrorResponse(res, result.code, result.message, result.error)
 }
 
-export const getClient = async (req: MyRequest<UserD>, res: Response) => {
-    const result = await ClientServices.executeGetClient(req.params.id)
+export const GetRegion = async (req: MyRequest<UserD>, res: Response) => {
+    const result = await RegionServices.executeGetRegion(req.params.id)
     if (result instanceof SuccessResponseC)
         return SuccessResponse(
             res,
@@ -53,11 +51,12 @@ export const getClient = async (req: MyRequest<UserD>, res: Response) => {
         return ErrorResponse(res, result.code, result.message, result.error)
 }
 
-export const updateClient = async (req: MyRequest<UserD>, res: Response) => {
-    const result = await ClientServices.executeUpdateClient(
-        req.params.id,
-        req.body
-    )
+export const UpdateRegion = async (req: MyRequest<UserD>, res: Response) => {
+    const { name, designation } = req.body
+    const result = await RegionServices.executeUpdateRegion(req.params.id, {
+        name,
+        designation,
+    })
     if (result instanceof SuccessResponseC)
         return SuccessResponse(
             res,
@@ -70,8 +69,8 @@ export const updateClient = async (req: MyRequest<UserD>, res: Response) => {
         return ErrorResponse(res, result.code, result.message, result.error)
 }
 
-export const deleteClient = async (req: MyRequest<UserD>, res: Response) => {
-    const result = await ClientServices.executeDeleteClient(req.params.id)
+export const DeleteRegion = async (req: MyRequest<UserD>, res: Response) => {
+    const result = await RegionServices.executeDeleteRegion(req.params.id)
     if (result instanceof SuccessResponseC)
         return SuccessResponse(
             res,
