@@ -6,6 +6,7 @@ import { clientRouter } from '@modules/client'
 import { regionRouter } from '@modules/region'
 import { orderRouter } from '@modules/order/order.router'
 import { supplierRouter } from '@modules/supplier'
+import { rawMaterialRouter } from '@modules/rawmaterial'
 export default function SetRouters(app: Application) {
     app.use('/', indexRouter)
     app.use('/api/auth', authRouter)
@@ -14,4 +15,5 @@ export default function SetRouters(app: Application) {
     app.use('/api/regions', regionRouter)
     app.use('/api/orders', orderRouter)
     app.use('/api/suppliers', supplierRouter)
+    app.use('/api/rawmaterials', rawMaterialRouter)
 }
