@@ -19,12 +19,11 @@ export const SignIn = async (req: MyRequest<UserD>, res: Response) => {
         return ErrorResponse(res, result.code, result.message, result.error)
 }
 export const SignUp = async (req: MyRequest<UserD>, res: Response) => {
-    const { email, password, firstName, lastName, stay = false } = req.body
+    const { email, password, name, stay = false } = req.body
     const result = await AuthServices.executeRegister(
         email,
         password,
-        firstName,
-        lastName,
+        name,
         stay,
         res
     )

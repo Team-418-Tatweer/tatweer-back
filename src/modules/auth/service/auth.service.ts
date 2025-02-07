@@ -91,8 +91,7 @@ export class AuthServices {
     static executeRegister = async (
         email: string,
         password: string,
-        firstName: string,
-        lastName: string,
+        name: string,
         stay: boolean,
         res: Response
     ): Promise<ResponseT> => {
@@ -114,7 +113,7 @@ export class AuthServices {
                     msg
                 )
             }
-            const user = new UserModel({ email, password, firstName, lastName })
+            const user = new UserModel({ email, password, name })
             await user.save()
             const token = Sign({ _id: user._id.toString(), role: user.role })
             res.cookie('token', token, getCookiesSettings(stay))
