@@ -16,7 +16,12 @@ export const inventorySchema = new Schema<InventoryI>(
         safetyStock: { type: Number, required: true },
         itemType: {
             type: String,
-            enum: ['product', 'material'],
+            enum: ['Product', 'RawMaterial'],
+            required: true,
+        },
+        itemID: {
+            type: Schema.Types.ObjectId,
+            refPath: 'itemType',
             required: true,
         },
     },
