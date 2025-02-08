@@ -14,6 +14,7 @@ import { inventoryMovementRouter } from '@modules/imovement'
 import { integrationRouter } from '@modules/integration'
 import { alertRouter } from '@modules/alert'
 import { actionRouter } from '@modules/action'
+import { forecastRouter } from '@modules/forecast'
 
 export default function SetRouters(app: Application) {
     app.use('/', indexRouter)
@@ -31,4 +32,5 @@ export default function SetRouters(app: Application) {
     app.use('/api/integrations', integrationRouter)
     app.use('/api/alerts', alertRouter)
     app.use('/api/actions', actionRouter)
+    app.use('/api/forecasts', forecastRouter)
 }
