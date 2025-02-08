@@ -32,6 +32,10 @@ export const updateInventoryValidators = [
         .optional()
         .isMongoId()
         .withMessage('Item ID must be a valid Mongo ID'),
+    body('currentStock')
+        .optional()
+        .isNumeric()
+        .withMessage('Current Stock must be a number'),
     body('recorderPoint')
         .optional()
         .isNumeric()

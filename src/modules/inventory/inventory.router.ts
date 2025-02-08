@@ -1,7 +1,10 @@
 import { Router } from 'express'
 import { validator } from '@middleware/validator'
 import { checkLogs, isLoggedIn, isAdmin } from '@middleware/auth'
-import { createInventoryValidators } from './service/inventory.validator'
+import {
+    createInventoryValidators,
+    updateInventoryValidators,
+} from './service/inventory.validator'
 import {
     CreateInventory,
     GetInventories,
@@ -34,7 +37,7 @@ inventoryRouter
         checkLogs,
         isLoggedIn,
         isAdmin,
-        createInventoryValidators,
+        updateInventoryValidators,
         validator,
         UpdateInventory
     )

@@ -31,7 +31,22 @@ export const inventorySchema = new Schema<InventoryI>(
     }
 )
 
-inventorySchema.post('save', async function (doc: InventoryD) {
+inventorySchema.pre('save', function (next) {
+    if (this.currentStock + this.safetyStock < this.recorderPoint) {
+        // launch an alert
+    }
+
+    if (this.currentStock < 0) {
+        throw new Error('Current Stock cannot be negative')
+    }
+
+    if (this.safetyStock < 0) {
+        throw new Error('Safety Stock cannot be negative')
+    }
+    next()
+})
+
+const updateInStock = async function (doc: InventoryD) {
     if (doc.itemType === 'Product') {
         const product = await ProductModel.findById(doc.itemID)
         if (product) {
@@ -46,7 +61,11 @@ inventorySchema.post('save', async function (doc: InventoryD) {
             await product.save()
         }
     }
-})
+}
+
+inventorySchema.post('save', updateInStock)
+
+inventorySchema.post('findOneAndUpdate', updateInStock)
 
 export const InventoryModel = model<InventoryI, InventoryModel>(
     'Inventory',

@@ -63,13 +63,21 @@ export const GetInventory = async (req: MyRequest<UserD>, res: Response) => {
 }
 
 export const UpdateInventory = async (req: MyRequest<UserD>, res: Response) => {
-    const { itemID, itemType, recorderPoint, safetyStock, warehouse } = req.body
+    const {
+        itemID,
+        itemType,
+        recorderPoint,
+        currentStock,
+        safetyStock,
+        warehouse,
+    } = req.body
     const result = await InventoryServices.executeUpdateInventory(
         req.params.id,
         {
             itemID,
             itemType,
             recorderPoint,
+            currentStock,
             safetyStock,
             warehouse,
         }
