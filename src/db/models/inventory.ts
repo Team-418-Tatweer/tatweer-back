@@ -1,5 +1,6 @@
 import { Document, model, Model, Schema } from 'mongoose'
 import { ProductModel } from './product'
+import { WarehouseModel } from './warehouse'
 
 export interface InventoryD extends Document<InventoryI>, InventoryI {}
 
@@ -46,7 +47,7 @@ inventorySchema.pre('save', function (next) {
     next()
 })
 
-const updateInStock = async function (doc: InventoryD) {
+const updateProductInStock = async function (doc: InventoryD) {
     if (doc.itemType === 'Product') {
         const product = await ProductModel.findById(doc.itemID)
         if (product) {
@@ -63,9 +64,56 @@ const updateInStock = async function (doc: InventoryD) {
     }
 }
 
-inventorySchema.post('save', updateInStock)
+inventorySchema.pre('save', async function (next) {
+    const warehouse = await WarehouseModel.findById(this.warehouse)
+    if (!warehouse) {
+        throw new Error('Warehouse does not exist')
+    }
+    const inventories = await InventoryModel.find({ warehouse: this.warehouse })
+    let totalStock = inventories.reduce((acc, inv) => {
+        return acc + inv.currentStock + inv.safetyStock
+    }, 0)
+    if (this.isNew) {
+        totalStock += this.currentStock + this.safetyStock
+    }
+    if (totalStock > warehouse.capacity) {
+        throw new Error('Warehouse capacity exceeded')
+    } else {
+        warehouse.usedCapacity = totalStock
+        await warehouse.save()
+        next()
+    }
+})
 
-inventorySchema.post('findOneAndUpdate', updateInStock)
+inventorySchema.pre('findOneAndUpdate', async function (next) {
+    const inventory = await InventoryModel.findById(this.getQuery()._id)
+    if (!inventory) {
+        throw new Error('Inventory not found')
+    }
+    const options = this.getUpdate() as Partial<InventoryI>
+    const warehouse = await WarehouseModel.findById(inventory.warehouse)
+    if (!warehouse) {
+        throw new Error('Warehouse does not exist')
+    }
+    let totalStock = warehouse.usedCapacity
+    if (typeof options.currentStock !== 'undefined') {
+        totalStock = totalStock - inventory.currentStock + options.currentStock
+    }
+    if (typeof options.safetyStock !== 'undefined') {
+        totalStock = totalStock - inventory.safetyStock + options.safetyStock
+    }
+    if (totalStock > warehouse.capacity) {
+        throw new Error('Warehouse capacity exceeded')
+    } else {
+        warehouse.usedCapacity = totalStock
+        await warehouse.save()
+    }
+    next()
+})
+
+inventorySchema.post('save', updateProductInStock)
+
+inventorySchema.post('findOneAndUpdate', updateProductInStock)
 
 export const InventoryModel = model<InventoryI, InventoryModel>(
     'Inventory',

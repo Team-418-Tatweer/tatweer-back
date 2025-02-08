@@ -3,6 +3,7 @@ import inventoryLogs, { inventoryLogger } from './inventory.logs'
 import { formatString } from '@utils/Strings'
 import { HttpCodes } from '@config/Errors'
 import { ErrorResponseC, SuccessResponseC } from '@myTypes/services.response'
+import { inventoryEventEmitter, INVENTORY_EVENTS } from '@utils/eventEmitter'
 
 export class InventoryServices {
     static executeCreateInventory = async (
@@ -107,13 +108,7 @@ export class InventoryServices {
         inventoryData: Partial<InventoryI>
     ): Promise<ResponseT> => {
         try {
-            const inventory = await InventoryModel.findByIdAndUpdate(
-                id,
-                inventoryData,
-                {
-                    new: true,
-                }
-            )
+            const inventory = await InventoryModel.findById(id)
             if (!inventory) {
                 const msg = formatString(
                     inventoryLogs.INVENTORY_NOT_FOUND.message,
@@ -129,13 +124,53 @@ export class InventoryServices {
                 )
             }
 
+            // Emit event before update if stock-related fields are being updated
+            if (
+                inventoryData.currentStock !== undefined ||
+                inventoryData.safetyStock !== undefined ||
+                inventoryData.warehouse
+            ) {
+                inventoryEventEmitter.emit(INVENTORY_EVENTS.STOCK_UPDATED, {
+                    oldWarehouseId: inventory.warehouse,
+                    newWarehouseId: inventoryData.warehouse,
+                    oldCurrentStock: inventory.currentStock,
+                    newCurrentStock:
+                        inventoryData.currentStock ?? inventory.currentStock,
+                    oldSafetyStock: inventory.safetyStock,
+                    newSafetyStock:
+                        inventoryData.safetyStock ?? inventory.safetyStock,
+                })
+            }
+
+            const updatedInventory = await InventoryModel.findByIdAndUpdate(
+                id,
+                inventoryData,
+                {
+                    new: true,
+                }
+            )
+            if (!updatedInventory) {
+                const msg = formatString(
+                    inventoryLogs.INVENTORY_NOT_FOUND.message,
+                    {
+                        id,
+                    }
+                )
+                inventoryLogger.error(msg)
+                return new ErrorResponseC(
+                    inventoryLogs.INVENTORY_NOT_FOUND.type,
+                    HttpCodes.NotFound.code,
+                    msg
+                )
+            }
+
             const msg = formatString(inventoryLogs.INVENTORY_UPDATED.message, {
-                id: inventory._id,
+                id: updatedInventory._id,
             })
             inventoryLogger.info(msg)
             return new SuccessResponseC(
                 inventoryLogs.INVENTORY_UPDATED.type,
-                inventory.toObject(),
+                updatedInventory.toObject(),
                 msg,
                 HttpCodes.OK.code
             )
