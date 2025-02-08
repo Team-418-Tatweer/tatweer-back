@@ -11,6 +11,7 @@ import { pmaterialRouter } from '@modules/pmaterial'
 import { warehouseRouter } from '@modules/warehouse'
 import { inventoryRouter } from '@modules/inventory'
 import { inventoryMovementRouter } from '@modules/imovement'
+import { integrationRouter } from '@modules/integration'
 
 export default function SetRouters(app: Application) {
     app.use('/', indexRouter)
@@ -25,4 +26,5 @@ export default function SetRouters(app: Application) {
     app.use('/api/warehouses', warehouseRouter)
     app.use('/api/inventory', inventoryRouter)
     app.use('/api/imovements', inventoryMovementRouter)
+    app.use('/api/integrations', integrationRouter)
 }
