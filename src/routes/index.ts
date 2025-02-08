@@ -9,6 +9,7 @@ import { supplierRouter } from '@modules/supplier'
 import { rawMaterialRouter } from '@modules/rawmaterial'
 import { pmaterialRouter } from '@modules/pmaterial'
 import { warehouseRouter } from '@modules/warehouse'
+import { inventoryRouter } from '@modules/inventory'
 
 export default function SetRouters(app: Application) {
     app.use('/', indexRouter)
@@ -21,4 +22,5 @@ export default function SetRouters(app: Application) {
     app.use('/api/rawmaterials', rawMaterialRouter)
     app.use('/api/productmaterials', pmaterialRouter)
     app.use('/api/warehouses', warehouseRouter)
+    app.use('/api/inventory', inventoryRouter)
 }
