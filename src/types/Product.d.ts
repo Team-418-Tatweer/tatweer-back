@@ -3,4 +3,5 @@ declare interface ProductI {
     category: string
     price: number
     unit: string
+    inStock: number
 }

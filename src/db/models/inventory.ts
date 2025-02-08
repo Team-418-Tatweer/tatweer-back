@@ -1,4 +1,5 @@
 import { Document, model, Model, Schema } from 'mongoose'
+import { ProductModel } from './product'
 
 export interface InventoryD extends Document<InventoryI>, InventoryI {}
 
@@ -29,6 +30,23 @@ export const inventorySchema = new Schema<InventoryI>(
         timestamps: true,
     }
 )
+
+inventorySchema.post('save', async function (doc: InventoryD) {
+    if (doc.itemType === 'Product') {
+        const product = await ProductModel.findById(doc.itemID)
+        if (product) {
+            const inventories = await InventoryModel.find({
+                itemType: 'Product',
+                itemID: doc.itemID,
+            })
+            const totalStock = inventories.reduce((acc, inv) => {
+                return acc + inv.currentStock + inv.safetyStock
+            }, 0)
+            product.inStock = totalStock
+            await product.save()
+        }
+    }
+})
 
 export const InventoryModel = model<InventoryI, InventoryModel>(
     'Inventory',

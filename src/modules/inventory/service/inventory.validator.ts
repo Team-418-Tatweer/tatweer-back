@@ -1,12 +1,11 @@
 import { body } from 'express-validator'
-import { Types } from 'mongoose'
 
 export const createInventoryValidators = [
     body('warehouse')
         .isMongoId()
         .withMessage('Warehouse must be a valid Mongo ID'),
     body('itemType')
-        .isIn(['product', 'material'])
+        .isIn(['Product', 'RawMaterial'])
         .withMessage('Item Type must be either "product" or "material"'),
     body('itemID').isMongoId().withMessage('Item ID must be a valid Mongo ID'),
     body('currentStock')
@@ -27,7 +26,7 @@ export const updateInventoryValidators = [
         .withMessage('Warehouse must be a valid Mongo ID'),
     body('itemType')
         .optional()
-        .isIn(['product', 'material'])
+        .isIn(['Product', 'RawMaterial'])
         .withMessage('Item Type must be either "product" or "material"'),
     body('itemID')
         .optional()

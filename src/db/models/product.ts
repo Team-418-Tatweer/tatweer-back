@@ -11,6 +11,7 @@ const productsSchema = new Schema<ProductI>(
         category: { type: String, required },
         price: { type: Number, required },
         unit: { type: String, required },
+        inStock: { type: Number, required, default: 0 },
     },
     {
         timestamps: true,

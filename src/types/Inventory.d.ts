@@ -1,6 +1,6 @@
 declare interface InventoryI {
     warehouse: Types.ObjectId
-    itemType: 'product' | 'material'
+    itemType: 'Product' | 'RawMaterial'
     itemID: Types.ObjectId
     currentStock: number
     recorderPoint: number
