@@ -7,6 +7,7 @@ import {
     UpdateProduct,
     UpdateProductPrice,
     DeleteProduct,
+    GetDetailedProduct,
 } from './product.controller'
 import { Router } from 'express'
 import { validator } from '@middleware/validator'
@@ -30,6 +31,9 @@ productRouter
     .get(checkLogs, GetProduct)
     .put(checkLogs, isLoggedIn, isAdmin, UpdateProduct)
     .delete(checkLogs, isLoggedIn, isAdmin, DeleteProduct)
+productRouter
+    .route('/:id/details')
+    .get(checkLogs, isLoggedIn, GetDetailedProduct)
 productRouter
     .route('/:id/price')
     .put(checkLogs, isLoggedIn, isAdmin, UpdateProductPrice)

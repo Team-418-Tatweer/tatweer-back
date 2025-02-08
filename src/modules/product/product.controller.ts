@@ -53,6 +53,25 @@ export const GetProduct = async (req: MyRequest<UserD>, res: Response) => {
         return ErrorResponse(res, result.code, result.message, result.error)
 }
 
+export const GetDetailedProduct = async (
+    req: MyRequest<UserD>,
+    res: Response
+) => {
+    const result = await ProductServices.executeGetDetailedProduct(
+        req.params.id
+    )
+    if (result instanceof SuccessResponseC)
+        return SuccessResponse(
+            res,
+            result.code,
+            result.data,
+            result.message,
+            result.status
+        )
+    if (result instanceof ErrorResponseC)
+        return ErrorResponse(res, result.code, result.message, result.error)
+}
+
 export const UpdateProduct = async (req: MyRequest<UserD>, res: Response) => {
     const { name, category, price, unit } = req.body
     const result = await ProductServices.executeUpdateProduct(req.params.id, {

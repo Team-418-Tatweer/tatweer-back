@@ -3,6 +3,8 @@ import productLogs, { productLogger } from './product.logs'
 import { formatString } from '@utils/Strings'
 import { HttpCodes } from '@config/Errors'
 import { ErrorResponseC, SuccessResponseC } from '@myTypes/services.response'
+import { ProductMaterialModel } from '@models/pmaterial'
+import { RawMaterialModel } from '@models/rawmaterial'
 
 export class ProductServices {
     static executeCreateProduct = async (
@@ -84,6 +86,59 @@ export class ProductServices {
             return new SuccessResponseC(
                 productLogs.PRODUCT_FOUND.type,
                 product,
+                msg,
+                HttpCodes.OK.code
+            )
+        } catch (err) {
+            const msg = formatString(productLogs.PRODUCTS_ERROR.message, {
+                error: (err as Error)?.message || '',
+            })
+            productLogger.error(msg, err as Error)
+            return new ErrorResponseC(
+                productLogs.PRODUCTS_ERROR.type,
+                HttpCodes.InternalServerError.code,
+                msg
+            )
+        }
+    }
+
+    static executeGetDetailedProduct = async (
+        productId: string
+    ): Promise<ResponseT> => {
+        try {
+            const product = await ProductModel.findById(productId)
+            if (!product) {
+                const msg = formatString(
+                    productLogs.PRODUCT_NOT_FOUND.message,
+                    { id: productId }
+                )
+                return new ErrorResponseC(
+                    productLogs.PRODUCT_NOT_FOUND.type,
+                    HttpCodes.NotFound.code,
+                    msg
+                )
+            }
+
+            const materialsIds = await ProductMaterialModel.find({
+                product: productId,
+            }).select('material')
+
+            const materials = await RawMaterialModel.find({
+                _id: { $in: materialsIds.map((m) => m.material) },
+            }).select('name unitCost -_id')
+
+            const productWithMaterials = {
+                ...product.toObject(),
+                materials: materials,
+                date: Date.now(),
+            }
+
+            const msg = formatString(productLogs.PRODUCT_FOUND.message, {
+                name: product.name,
+            })
+            return new SuccessResponseC(
+                productLogs.PRODUCT_FOUND.type,
+                productWithMaterials,
                 msg,
                 HttpCodes.OK.code
             )
