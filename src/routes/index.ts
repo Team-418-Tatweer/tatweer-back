@@ -13,6 +13,7 @@ import { inventoryRouter } from '@modules/inventory'
 import { inventoryMovementRouter } from '@modules/imovement'
 import { integrationRouter } from '@modules/integration'
 import { alertRouter } from '@modules/alert'
+import { actionRouter } from '@modules/action'
 
 export default function SetRouters(app: Application) {
     app.use('/', indexRouter)
@@ -29,4 +30,5 @@ export default function SetRouters(app: Application) {
     app.use('/api/imovements', inventoryMovementRouter)
     app.use('/api/integrations', integrationRouter)
     app.use('/api/alerts', alertRouter)
+    app.use('/api/actions', actionRouter)
 }
